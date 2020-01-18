@@ -19,6 +19,8 @@ def labelToString(dic, predictions):
             p.label = dic.get(p.label)
     return predictions
 
+
+
 def main():
 
     label_defs = {"person" : "test"}
