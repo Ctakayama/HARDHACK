@@ -1,6 +1,7 @@
 import time
 import edgeiq
 import cv2
+
 """
 Use object detection to detect objects in the frame in realtime. The
 types of objects detected can be changed by selecting different models.
@@ -45,7 +46,9 @@ def main():
                 frame = video_stream.read()
                 results = obj_detect.detect_objects(frame, confidence_level=.5)
                 frame = edgeiq.markup_image(
-                        frame, labelToString(label_defs, results.predictions), colors=obj_detect.colors)
+                        frame, labelToString(label_defs, results.predictions), show_labels = True,
+                        show_confidences = False, colors=obj_detect.colors, 
+                        line_thickness = -1)
 
                 # Generate text to display on streamer
                 text = ["Model: {}".format(obj_detect.model_id)]
