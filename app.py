@@ -13,12 +13,33 @@ To change the engine and accelerator, follow this guide:
 https://dashboard.alwaysai.co/docs/application_development/changing_the_engine_and_accelerator.html
 """
 
+note = cv2.imread('note.jpg')
+w_resize = note.shape[1]*0.4
+h_resize = note.shape[0]*0.2
+
+note = cv2.resize(note, (int(w_resize), int(h_resize)))
+
+# This function changes labels to text string
 def labelToString(dic, predictions):
     for p in predictions:
         if p.label in dic:
             p.label = dic.get(p.label)
     return predictions
 
+# This function adds notes to image
+def addNotes(image, predictions, note):
+    boxes = [p.box for p in predictions]
+    for b in boxes:
+        image = overlayNote(image, note, b)
+    return image
+
+# This function addes single note to image
+def overlayNote(image, note, box):
+    x = box.end_x
+    y = box.start_y
+    #if image.shape[1] - y > note.shape[1] and image.shape[0] - x > note.shape[0]:
+    image[y:y + note.shape[0], x - note.shape[1]:x] = note
+    return image
 
 
 def main():
@@ -50,7 +71,8 @@ def main():
                 frame = edgeiq.markup_image(
                         frame, labelToString(label_defs, results.predictions), show_labels = True,
                         show_confidences = False, colors=obj_detect.colors, 
-                        line_thickness = -1)
+                        line_thickness = 0)
+                frame = addNotes(frame, results.predictions, note)
 
                 # Generate text to display on streamer
                 text = ["Model: {}".format(obj_detect.model_id)]
