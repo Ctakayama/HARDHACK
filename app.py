@@ -14,10 +14,19 @@ https://dashboard.alwaysai.co/docs/application_development/changing_the_engine_a
 """
 
 note = cv2.imread('note.jpg')
+noteB = cv2.imread('BOTTLE.jpg')
+noteC = cv2.imread('CHAIR.jpg')
+noteP = cv2.imread('PERSON.jpg')
+noteT = cv2.imread('TVMONITOR.jpg')
+
 w_resize = note.shape[1]*0.23
 h_resize = note.shape[0]*0.23
 
 note = cv2.resize(note, (int(w_resize), int(h_resize)))
+noteB = cv2.resize(noteB, (int(w_resize), int(h_resize)))
+noteC = cv2.resize(noteC, (int(w_resize), int(h_resize)))
+noteP = cv2.resize(noteP, (int(w_resize), int(h_resize)))
+noteT = cv2.resize(noteT, (int(w_resize), int(h_resize)))
 
 # This function changes labels to text string
 def labelToString(dic, predictions):
@@ -40,13 +49,23 @@ def overlayNote(image, p):
     #if image.shape[1] - y > note.shape[1] and image.shape[0] - x > note.shape[0]:
     xi = 10
     yi = 10
-    temp = note[:,:,:]
-    for s in strToList(p.label):
-        cv2.putText(temp, s, (xi,yi), cv2.FONT_HERSHEY_PLAIN, 0.7, (255,0,0), 1, cv2.LINE_AA)
-        yi = yi + 20
+    # temp = note[:,:,:]
+    # for s in strToList(p.label):
+    #     # cv2.putText(temp, s, (xi,yi), cv2.FONT_HERSHEY_PLAIN, 0.7, (255,0,0), 1, cv2.LINE_AA)
+
+    #     yi = yi + 20
+    if(p.label == 'person'):
+        note[:noteP.shape[0],:noteP.shape[1]] = noteP
+    if(p.label == 'chair'):
+        note[:noteC.shape[0],:noteC.shape[1]] = noteC
+    if(p.label == 'tvmonitor'):
+        note[:noteT.shape[0],:noteT.shape[1]] = noteT
+    if(p.label == 'bottle'):
+        note[:noteB.shape[0],:noteB.shape[1]] = noteB
     count = 0
     try:
-        image[y:y + temp.shape[0], x - temp.shape[1]:x] = temp
+        image[y:y + note.shape[0], x - note.shape[1]:x] = note
+
     except:
         count = count + 1
         print('failed')
@@ -57,10 +76,7 @@ def strToList (s):
 
 def main():
 
-    label_defs = {"person" : "SPREAD KINDNESS",
-                  "chair" : "CAREFUL SITTING DOWN",
-                  "bottle" : "STAY HYDRATED !!!",
-                  "tvmonitor" : "GO OUTSIDE"}
+    label_defs = {}
 
     obj_detect = edgeiq.ObjectDetection(
             "alwaysai/mobilenet_ssd")
