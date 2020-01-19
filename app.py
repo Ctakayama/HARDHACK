@@ -12,17 +12,17 @@ https://dashboard.alwaysai.co/docs/application_development/changing_the_model.ht
 To change the engine and accelerator, follow this guide:
 https://dashboard.alwaysai.co/docs/application_development/changing_the_engine_and_accelerator.html
 """
-
-note = cv2.imread('note.jpg')
+note = None
 noteB = cv2.imread('BOTTLE.jpg')
 noteC = cv2.imread('CHAIR.jpg')
 noteP = cv2.imread('PERSON.jpg')
 noteT = cv2.imread('TVMONITOR.jpg')
 
-w_resize = note.shape[1]*0.23
-h_resize = note.shape[0]*0.23
+w_resizeo = noteB.shape[1]*0.2
+h_resizeo = noteB.shape[0]*0.2
+w_resize = noteB.shape[1]*0.2
+h_resize = noteB.shape[0]*0.2
 
-note = cv2.resize(note, (int(w_resize), int(h_resize)))
 noteB = cv2.resize(noteB, (int(w_resize), int(h_resize)))
 noteC = cv2.resize(noteC, (int(w_resize), int(h_resize)))
 noteP = cv2.resize(noteP, (int(w_resize), int(h_resize)))
@@ -54,14 +54,15 @@ def overlayNote(image, p):
     #     # cv2.putText(temp, s, (xi,yi), cv2.FONT_HERSHEY_PLAIN, 0.7, (255,0,0), 1, cv2.LINE_AA)
 
     #     yi = yi + 20
+    a = 25
     if(p.label == 'person'):
-        note[:noteP.shape[0],:noteP.shape[1]] = noteP
+        note = noteP
     if(p.label == 'chair'):
-        note[:noteC.shape[0],:noteC.shape[1]] = noteC
+        note = noteC
     if(p.label == 'tvmonitor'):
-        note[:noteT.shape[0],:noteT.shape[1]] = noteT
+        note = noteT
     if(p.label == 'bottle'):
-        note[:noteB.shape[0],:noteB.shape[1]] = noteB
+        note = noteB
     count = 0
     try:
         image[y:y + note.shape[0], x - note.shape[1]:x] = note
